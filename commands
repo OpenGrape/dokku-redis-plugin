@@ -108,6 +108,10 @@ case "$1" in
             fi
             ENV_TEMP=$(cat "${ENV_FILE}" | sed "/^export REDIS_URL=/ d")
             ENV_TEMP="${ENV_TEMP}\nexport ${REDIS_URL}"
+            cat >>$ENV_FILE <<"EOF"
+export REDIS_HOST=$IP
+export REDIS_PORT=6379
+EOF
             echo -e "$ENV_TEMP" | sed '/^$/d' | sort > $ENV_FILE
             echo
             echo "-----> $APP linked to $REDIS_IMAGE container"
