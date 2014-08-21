@@ -113,10 +113,13 @@ case "$1" in
             fi
             
             if [ -f $ENV_FILE ]; then
-                sed -i "/^export (?:REDIS|REDISDB)_(?:HOST|PORT)=/ d" $ENV_FILE
+                sed -i '/^export (?:REDIS|REDISDB)_NAME=/ d' $ENV_FILE
+                sed -i '/^export (?:REDIS|REDISDB)_PORT=/ d' $ENV_FILE
+                sed -i '/^export (?:REDIS|REDISDB)_PORT_6379_TCP=/ d' $ENV_FILE
+                sed -i '/^export (?:REDIS|REDISDB)_PORT_6379_TCP_ADDR=/ d' $ENV_FILE
+                sed -i '/^export (?:REDIS|REDISDB)_PORT_6379_TCP_PORT=/ d' $ENV_FILE
             fi
             
-            ENV_TEMP=$(cat "${ENV_FILE}" | sed "/^export (?:REDIS|REDISDB)_(?:HOST|PORT)=/ d")
             ENV_TEMP="${ENV_TEMP}\nexport ${REDIS_NAME}\nexport ${REDIS_PORT}\nexport ${REDIS_PORT_6379_TCP}\nexport ${REDIS_PORT_6379_TCP_ADDR}\nexport ${REDIS_PORT_6379_TCP_PORT}"
             echo -e "$ENV_TEMP" | sed '/^$/d' | sort > $ENV_FILE
             echo
