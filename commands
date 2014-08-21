@@ -101,7 +101,7 @@ case "$1" in
         if [[ -n "$ID" ]]; then
             IP=$(docker inspect $ID | grep IPAddress | awk '{ print $2 }' | tr -d ',"')
             # Write REDIS_IP to app's ENV file
-            REDIS_NAME="REDIS_HOST=$ID"
+            REDIS_NAME="REDIS_HOST=$REDIS_IMAGE"
             REDIS_PORT="REDIS_PORT=redis://$IP:6379"
             REDIS_PORT_6379_TCP="REDIS_PORT_6379_TCP=redis://$IP:6379"
             REDIS_PORT_6379_TCP_ADDR="REDIS_PORT_6379_TCP_ADDR=$IP"
@@ -111,6 +111,11 @@ case "$1" in
             if [[ ! -f $ENV_FILE ]]; then
                 touch $ENV_FILE
             fi
+            
+            if [ -f $ENV_FILE ]; then
+                sed -i "/^export (?:REDIS|REDISDB)_(?:HOST|PORT)=/ d" $ENV_FILE
+            fi
+            
             ENV_TEMP=$(cat "${ENV_FILE}" | sed "/^export (?:REDIS|REDISDB)_(?:HOST|PORT)=/ d")
             ENV_TEMP="${ENV_TEMP}\nexport ${REDIS_NAME}\nexport ${REDIS_PORT}\nexport ${REDIS_PORT_6379_TCP}\nexport ${REDIS_PORT_6379_TCP_ADDR}\nexport ${REDIS_PORT_6379_TCP_PORT}"
             echo -e "$ENV_TEMP" | sed '/^$/d' | sort > $ENV_FILE
