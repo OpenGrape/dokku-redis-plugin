@@ -103,6 +103,7 @@ case "$1" in
             # Write REDIS_IP to app's ENV file
             REDIS_HOST="REDIS_HOST=$IP"
             REDIS_PORT="REDIS_PORT=6379"
+            REDIS_PORT_6379_TCP="REDIS_PORT_6379_TCP=redis://$IP:6379"
             REDIS_PORT_6379_TCP_ADDR="REDIS_PORT_6379_TCP_ADDR=$IP"
             REDIS_PORT_6379_TCP_PORT="REDIS_PORT_6379_TCP_PORT=6379"
             ENV_FILE="$DOKKU_ROOT/$APP/ENV"
@@ -110,7 +111,7 @@ case "$1" in
                 touch $ENV_FILE
             fi
             ENV_TEMP=$(cat "${ENV_FILE}" | sed "/^export (?:REDIS|REDISDB)_(?:HOST|PORT)=/ d")
-            ENV_TEMP="${ENV_TEMP}\nexport ${REDIS_HOST}\nexport ${REDIS_PORT}\nexport ${REDIS_PORT_6379_TCP_ADDR}\nexport ${REDIS_PORT_6379_TCP_PORT}"
+            ENV_TEMP="${ENV_TEMP}\nexport ${REDIS_HOST}\nexport ${REDIS_PORT}\nexport ${REDIS_PORT_6379_TCP}\nexport ${REDIS_PORT_6379_TCP_ADDR}\nexport ${REDIS_PORT_6379_TCP_PORT}"
             echo -e "$ENV_TEMP" | sed '/^$/d' | sort > $ENV_FILE
             echo
             echo "-----> $APP linked to $REDIS_IMAGE container"
