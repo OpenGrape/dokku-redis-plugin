@@ -112,7 +112,7 @@ case "$1" in
 export REDIS_HOST=$IP
 export REDIS_PORT=6379
 EOF
-            echo -e "$ENV_TEMP" | sed '/^$/d' | sort > $ENV_FILE
+            #echo -e "$ENV_TEMP" | sed '/^$/d' | sort > $ENV_FILE
             echo
             echo "-----> $APP linked to $REDIS_IMAGE container"
         fi
